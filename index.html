@@ -1,1 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Egg Arcade Test Page</title>
+    
+    <style>
+        /* This sets up a cool dark gaming background */
+        body {
+            background-color: #0f111a;
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
 
+        h1 {
+            color: #ffcc00;
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 0px 4px 10px rgba(255, 204, 0, 0.3);
+        }
+
+        p {
+            color: #a0aec0;
+            margin-bottom: 30px;
+        }
+
+        /* This styles your interactive Egg Arcade Button */
+        .arcade-btn {
+            background: linear-gradient(135deg, #ffcc00 0%, #ff9900 100%);
+            color: #000000;
+            border: none;
+            padding: 20px 40px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: 0px 8px 20px rgba(255, 153, 0, 0.4);
+            transition: all 0.2s ease;
+        }
+
+        /* Makes the button bounce slightly when you hover over it */
+        .arcade-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0px 12px 25px rgba(255, 153, 0, 0.6);
+        }
+
+        /* Makes the button feel clicky when pressed */
+        .arcade-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Styles the floating particle eggs */
+        .particle-egg {
+            position: absolute;
+            font-size: 2rem;
+            pointer-events: none;
+            animation: floatUp 1s ease-out forwards;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-200px) translateX(var(--x-move)) scale(0);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>🥚 EGG ARCADE</h1>
+    <p>Testing out the HTML, CSS, and JS workflow...</p>
+
+    <!-- The actual button element -->
+    <button class="arcade-btn" onclick="playArcadeEffect()">Launch Studio Prototype</button>
+
+    <script>
+        function playArcadeEffect() {
+            // 1. Play a retro synth beep sound completely through code
+            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            
+            oscillator.type = 'square'; // Gives it that 8-bit retro gaming sound
+            oscillator.frequency.setValueAtTime(300, audioCtx.currentTime); // Pitch changes
+            oscillator.frequency.exponentialRampToValueAtTime(800, audioCtx.currentTime + 0.15);
+            
+            gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            
+            oscillator.start();
+            oscillator.stop(audioCtx.currentTime + 0.15);
+
+            // 2. Spawn floating particle eggs around the button
+            for (let i = 0; i < 8; i++) {
+                const egg = document.createElement('div');
+                egg.className = 'particle-egg';
+                egg.innerText = '🥚';
+                
+                // Randomise where the eggs fly left or right
+                const randomX = (Math.random() - 0.5) * 150 + 'px';
+                egg.style.setProperty('--x-move', randomX);
+                
+                // Position right where the mouse clicked or center screen
+                egg.style.left = (window.innerWidth / 2 - 15) + 'px';
+                egg.style.top = (window.innerHeight / 2 - 50) + 'px';
+                
+                document.body.appendChild(egg);
+                
+                // Automatically clean up the HTML elements after animation ends
+                setTimeout(() => egg.remove(), 1000);
+            }
+        }
+    </script>
+</body>
+</html>
