@@ -1,131 +1,270 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Egg Arcade Test Page</title>
-    
-    <style>
-        /* This sets up a cool dark gaming background */
-        body {
-            background-color: #0f111a;
-            color: #ffffff;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-            overflow: hidden;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Game Arcade Dashboard</title>
+  <style>
+    /* --- CSS BASIC STYLING & CORE LAYOUT --- */
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f0f2f5;
+      margin: 0;
+      padding: 20px;
+      color: #333;
+    }
 
-        h1 {
-            color: #ffcc00;
-            font-size: 3rem;
-            margin-bottom: 10px;
-            text-shadow: 0px 4px 10px rgba(255, 204, 0, 0.3);
-        }
+    h1, h2 {
+      text-align: center;
+    }
 
-        p {
-            color: #a0aec0;
-            margin-bottom: 30px;
-        }
+    /* Creator Panel Area */
+    .creator-panel {
+      max-width: 500px;
+      margin: 0 auto 40px auto;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
 
-        /* This styles your interactive Egg Arcade Button */
-        .arcade-btn {
-            background: linear-gradient(135deg, #ffcc00 0%, #ff9900 100%);
-            color: #000000;
-            border: none;
-            padding: 20px 40px;
-            font-size: 1.5rem;
-            font-weight: bold;
-            border-radius: 12px;
-            cursor: pointer;
-            box-shadow: 0px 8px 20px rgba(255, 153, 0, 0.4);
-            transition: all 0.2s ease;
-        }
+    .creator-panel input {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 14px;
+    }
 
-        /* Makes the button bounce slightly when you hover over it */
-        .arcade-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0px 12px 25px rgba(255, 153, 0, 0.6);
-        }
+    #create-btn {
+      padding: 12px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 15px;
+    }
 
-        /* Makes the button feel clicky when pressed */
-        .arcade-btn:active {
-            transform: scale(0.95);
-        }
+    #create-btn:hover {
+      background-color: #218838;
+    }
 
-        /* Styles the floating particle eggs */
-        .particle-egg {
-            position: absolute;
-            font-size: 2rem;
-            pointer-events: none;
-            animation: floatUp 1s ease-out forwards;
-        }
+    /* The Dashboard Grid Layout */
+    #games-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 25px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
 
-        @keyframes floatUp {
-            0% {
-                transform: translateY(0) scale(1);
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(-200px) translateX(var(--x-move)) scale(0);
-                opacity: 0;
-            }
-        }
-    </style>
+    /* Individual Game Frame Slots */
+    .game-frame {
+      border-radius: 12px;
+      overflow: hidden;
+      background: white;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.06);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      position: relative;
+      min-height: 280px;
+    }
+
+    .game-frame:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 16px rgba(0,0,0,0.12);
+    }
+
+    /* The Dynamic Image Container */
+    .thumbnail-wrapper {
+      width: 100%;
+      height: 160px;
+      background-color: #e9ecef;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .game-thumbnail {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* CSS Fallback Strategy: Hide the <img> element if it has no src attribute or is empty */
+    .game-thumbnail[src=""], 
+    .game-thumbnail:not([src]) {
+      display: none;
+    }
+
+    /* Show fallback prompt inside the thumbnail frame if the image element is hidden */
+    .thumbnail-wrapper::before {
+      content: "No Image Available";
+      color: #6c757d;
+      font-size: 14px;
+      font-style: italic;
+      position: absolute;
+    }
+
+    /* Hide the fallback text prompt immediately once a valid image URL loads in */
+    .game-frame:has(.game-thumbnail[src]:not([src=""])) .thumbnail-wrapper::before {
+      display: none;
+    }
+
+    /* Content details inside the frame cards */
+    .game-info {
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+      justify-content: space-between;
+    }
+
+    .game-title {
+      margin: 0 0 15px 0;
+      font-size: 1.2rem;
+      color: #222;
+    }
+
+    .play-button {
+      padding: 10px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    .play-button:hover {
+      background-color: #0056b3;
+    }
+  </style>
 </head>
 <body>
 
-    <h1>🥚 EGG ARCADE</h1>
-    <p>Testing out the HTML, CSS, and JS workflow...</p>
+  <h1>Game Framework Dashboard</h1>
+  
+  <!-- CREATOR INPUT BLOCK -->
+  <div class="creator-panel">
+    <h2>Create a Game</h2>
+    <input type="text" id="new-title" placeholder="Enter Game Title..." />
+    <!-- Users can input an online picture link, or leave it blank to test the fallback -->
+    <input type="text" id="new-thumb" placeholder="Paste Thumbnail Image URL (Optional)..." />
+    <button id="create-btn">Publish Game Slot</button>
+  </div>
 
-    <!-- The actual button element -->
-    <button class="arcade-btn" onclick="playArcadeEffect()">Launch Studio Prototype</button>
+  <hr style="border: 0; height: 1px; background: #ccc; margin: 40px auto; max-width: 1200px;">
 
-    <script>
-        function playArcadeEffect() {
-            // 1. Play a retro synth beep sound completely through code
-            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            const oscillator = audioCtx.createOscillator();
-            const gainNode = audioCtx.createGain();
-            
-            oscillator.type = 'square'; // Gives it that 8-bit retro gaming sound
-            oscillator.frequency.setValueAtTime(300, audioCtx.currentTime); // Pitch changes
-            oscillator.frequency.exponentialRampToValueAtTime(800, audioCtx.currentTime + 0.15);
-            
-            gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
-            
-            oscillator.connect(gainNode);
-            gainNode.connect(audioCtx.destination);
-            
-            oscillator.start();
-            oscillator.stop(audioCtx.currentTime + 0.15);
+  <!-- GENERATED ARCADES DISPLAY SECTION -->
+  <h2>Available Games</h2>
+  <div id="games-container"></div>
 
-            // 2. Spawn floating particle eggs around the button
-            for (let i = 0; i < 8; i++) {
-                const egg = document.createElement('div');
-                egg.className = 'particle-egg';
-                egg.innerText = '🥚';
-                
-                // Randomise where the eggs fly left or right
-                const randomX = (Math.random() - 0.5) * 150 + 'px';
-                egg.style.setProperty('--x-move', randomX);
-                
-                // Position right where the mouse clicked or center screen
-                egg.style.left = (window.innerWidth / 2 - 15) + 'px';
-                egg.style.top = (window.innerHeight / 2 - 50) + 'px';
-                
-                document.body.appendChild(egg);
-                
-                // Automatically clean up the HTML elements after animation ends
-                setTimeout(() => egg.remove(), 1000);
-            }
-        }
-    </script>
+  <!-- --- JAVASCRIPT APP ARCHITECTURE --- -->
+  <script>
+    // 1. Initial Data state array (Simulating database item array strings)
+    const gamesList = [
+      { id: 1, title: "Space Blaster Arena", thumbnail: "https://picsum.photos" },
+      { id: 2, title: "Pixel Quest RPG", thumbnail: "https://picsum.photos" },
+      { id: 3, title: "Mystery Project X", thumbnail: "" } // Example showcasing the default empty state fallback
+    ];
+
+    // 2. DOM Node target
+    const container = document.getElementById('games-container');
+
+    // 3. Engine Function to render elements safely onto your UI loop
+    function renderGames() {
+      // Clean target wrapper container to avoid multi-rendering duplications
+      container.innerHTML = '';
+
+      // Map across data objects and design markup layout properties natively
+      gamesList.forEach(game => {
+        // Build card main boundaries
+        const frame = document.createElement('div');
+        frame.classList.add('game-frame');
+
+        // Build wrapper to manage fallback text layers cleanly
+        const thumbWrapper = document.createElement('div');
+        thumbWrapper.classList.add('thumbnail-wrapper');
+
+        // Configure Image nodes
+        const img = document.createElement('img');
+        img.classList.add('game-thumbnail');
+        img.alt = `${game.title} Graphic`;
+        img.src = game.thumbnail || ""; // Leaves it empty string if property string field is missing
+
+        thumbWrapper.appendChild(img);
+
+        // Build Details UI Content panel layers
+        const infoDiv = document.createElement('div');
+        infoDiv.classList.add('game-info');
+
+        const title = document.createElement('h3');
+        title.classList.add('game-title');
+        title.textContent = game.title;
+
+        const playBtn = document.createElement('button');
+        playBtn.classList.add('play-button');
+        playBtn.textContent = 'Launch Engine';
+        
+        // Dynamic Callback connection attaching unique database indices keys to runtime operations
+        playBtn.onclick = () => playGame(game.id);
+
+        // Chain Node connections together into DOM elements framework tree branches
+        infoDiv.appendChild(title);
+        infoDiv.appendChild(playBtn);
+
+        frame.appendChild(thumbWrapper);
+        frame.appendChild(infoDiv);
+
+        container.appendChild(frame);
+      });
+    }
+
+    // 4. Form controller input listening interface functionality pipeline handler
+    document.getElementById('create-btn').addEventListener('click', () => {
+      const titleInput = document.getElementById('new-title');
+      const thumbInput = document.getElementById('new-thumb');
+
+      // Validation catch preventing execution on empty form states strings
+      if (!titleInput.value.trim()) {
+        alert("Action Required: Please type a title name for your game asset slot.");
+        return;
+      }
+
+      // Format custom object instance matching configuration array schema specs structural guidelines
+      const newGame = {
+        id: Date.now(), // Generate a unique identifier tracking code stamp context reference automatically
+        title: titleInput.value.trim(),
+        thumbnail: thumbInput.value.trim()
+      };
+
+      // Push custom user data onto internal states memory structures array tracking layers
+      gamesList.push(newGame);
+
+      // Re-trigger layout engine rendering loop algorithm cycles updates automatically
+      renderGames();
+
+      // Clear layout elements forms structures back down to ready defaults states hooks
+      titleInput.value = '';
+      thumbInput.value = '';
+    });
+
+    // 5. Engine Core Simulator Entry points trigger controller hook
+    function playGame(gameId) {
+      console.log(`Starting engine runtime for ID record index target code context pointer path reference: ${gameId}`);
+      alert(`Initializing Sandbox Engine system pipeline sequence data parameters array payload targeting file reference index: ${gameId}`);
+    }
+
+    // Initialize display runtime layers execution upon fresh browser loading steps scripts operations pipelines
+    renderGames();
+  </script>
 </body>
 </html>
-
