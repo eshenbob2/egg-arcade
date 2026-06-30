@@ -4,7 +4,49 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>egg arcade</title>
-  
+  <!-- CSS will go below here -->
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <header class="top-nav">
+    <div class="auth-container" id="authBox"></div>
+    <input type="text" class="search-input" placeholder="search...">
+  </header>
+
+  <!-- Real Email Verification Alert Banner -->
+  <div class="verification-banner" id="verificationBanner" style="display: none;">
+    <span id="bannerText">⚠️ Account unverified. Check your browser console log for your code.</span>
+    <div>
+      <input type="text" class="verify-input" id="verifyCodeInput" placeholder="Enter code">
+      <button class="verify-btn" id="submitVerifyBtn">Verify</button>
+    </div>
+  </div>
+
+  <!-- Real Login/Signup Modal Window (Hidden by Default) -->
+  <div class="modal-overlay" id="authModal" style="display: none;">
+    <div class="modal-box">
+      <h2 id="modalTitle">Create Account</h2>
+      <form class="modal-form" id="modalForm">
+        <input type="text" id="formUsername" placeholder="Username" required>
+        <input type="email" id="formEmail" placeholder="Email Address" required>
+        <input type="password" id="formPassword" placeholder="Password" required>
+        <button type="submit" class="modal-submit" id="formSubmitBtn">Sign Up</button>
+      </form>
+      <div class="modal-toggle-link" id="modalToggle">Already have an account? Log In</div>
+    </div>
+  </div>
+
+  <!-- 12-Box Games Grid -->
+  <main class="grid-container">
+    <div class="card"></div><div class="card"></div><div class="card"></div><div class="card"></div>
+    <div class="card"></div><div class="card"></div><div class="card"></div><div class="card"></div>
+    <div class="card"></div><div class="card"></div><div class="card"></div><div class="card"></div>
+  </main> 
+
+  <!-- JavaScript will go below here -->
+</body>
+</html>
   <style>
     /* Reset and Base Styles */
     * {
@@ -18,33 +60,24 @@
       padding: 20px;
     }
 
-    /* Header Navbar */
+    /* Header Navbar Layout */
     .top-nav {
       width: 100%;
       height: 50px;
       border: 2px solid #000000;
       position: relative;
-      margin-bottom: 15px; /* Reduced slightly to account for the alert banner */
+      margin-bottom: 15px;
       display: flex;
       align-items: center;
       padding: 0 15px;
     }
 
-    /* Left-aligned Login/Logout System container */
+    /* Auth System Navigation Wrapper */
     .auth-container {
       display: flex;
       align-items: center;
       gap: 10px;
       font-family: sans-serif;
-    }
-
-    .auth-input {
-      height: 25px;
-      width: 110px;
-      border: 1px solid #000000;
-      padding: 0 8px;
-      font-size: 12px;
-      outline: none;
     }
 
     .auth-btn, .signout-btn {
@@ -65,9 +98,10 @@
     .username-display {
       font-size: 14px;
       font-weight: bold;
+      font-family: sans-serif;
     }
 
-    /* Styled Text Box Input */
+    /* Navbar Search Box Styling */
     .search-input {
       width: 30%;
       height: 25px;
@@ -76,12 +110,12 @@
       right: 15px;
       top: 50%;
       transform: translateY(-50%);
-      padding: 0 10px; /* Adds space for internal typing text */
-      outline: none;  /* Removes browser default focus outlines */
+      padding: 0 10px;
+      outline: none;
       font-family: sans-serif;
     }
 
-    /* Email Verification Alert Banner Layout */
+    /* Active Verification Layout Banner */
     .verification-banner {
       width: 100%;
       background-color: #fff3cd;
@@ -96,16 +130,77 @@
       align-items: center;
     }
 
+    .verify-input {
+      height: 25px;
+      width: 100px;
+      border: 1px solid #856404;
+      padding: 0 5px;
+      outline: none;
+      margin-right: 5px;
+    }
+
     .verify-btn {
-      background: none;
+      background-color: #856404;
       border: none;
-      text-decoration: underline;
+      color: #ffffff;
+      padding: 3px 10px;
       font-weight: bold;
-      color: #856404;
       cursor: pointer;
     }
 
-    /* 3-Column Content Grid */
+    /* Pop-up Modal System Layout */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex; justify-content: center; align-items: center;
+      z-index: 1000;
+    }
+
+    .modal-box {
+      background: #ffffff;
+      border: 3px solid #000000;
+      padding: 25px;
+      width: 320px;
+      font-family: sans-serif;
+    }
+
+    .modal-box h2 {
+      margin-bottom: 15px;
+      font-size: 20px;
+    }
+
+    .modal-form {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .modal-form input {
+      height: 30px;
+      border: 1px solid #000000;
+      padding: 0 8px;
+      outline: none;
+    }
+
+    .modal-submit {
+      height: 35px;
+      background: #000000;
+      color: #ffffff;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .modal-toggle-link {
+      font-size: 12px;
+      text-align: center;
+      margin-top: 10px;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+
+    /* 3-Column Content Grid Layout */
     .grid-container {
       display: flex;
       flex-wrap: wrap;
@@ -113,10 +208,10 @@
       width: 100%;
     }
 
-    /* Grid Cards */
+    /* Grid Game Cards */
     .card {
-      flex: 1 1 calc(33.333% - 14px); /* Creates 3 columns accounting for gap */
-      min-width: 250px; /* Forces boxes to stack cleanly on small mobile screens */
+      flex: 1 1 calc(33.333% - 14px);
+      min-width: 250px;
       height: 150px;
       border: 2px solid #000000;
       cursor: pointer;
@@ -126,116 +221,172 @@
       border: 3px dotted black;
     }
   </style>
-</head>
-<body>
+    // 1. Storage & Account Database Controllers
+    const DB_KEY = "eggArcade_users";
+    const SESSION_KEY = "eggArcade_session";
 
-  <!-- Top Navigation Wireframe -->
-  <header class="top-nav">
-    <!-- Dynamic Auth System Area (Injected via Javascript) -->
-    <div class="auth-container" id="authBox"></div>
+    function getUsersDB() {
+      return JSON.parse(localStorage.getItem(DB_KEY)) || {};
+    }
 
-    <!-- Replaced div with an actual semantic text input -->
-    <input type="text" class="search-input" placeholder="search...">
-  </header>
+    function saveUsersDB(db) {
+      localStorage.setItem(DB_KEY, JSON.stringify(db));
+    }
 
-  <!-- Email Verification Alert System Bar -->
-  <div class="verification-banner" id="verificationBanner" style="display: none;">
-    <span>⚠️ Verification link sent to your email. Click to verify your profile data.</span>
-    <button class="verify-btn" id="verifyMockBtn">Verify Now</button>
-  </div>
+    // Secure browser hashing using SHA-256 for real password security
+    async function hashPassword(password) {
+      const msgBuffer = new TextEncoder().encode(password);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
 
-  <!-- 12-Box Grid Wireframe -->
-  <main class="grid-container">
-    <div class="card"></div>
-    <div class="card"></div>
-    <div class="card"></div>
-    <div class="card"></div>
-    <div class="card"></div>
-    <div class="card"></div>
-    <div class="card"></div>
-    <div class="card"></div>
-    <div class="card"></div>
-    <div class="card"></div>
-    <div class="card"></div>
-    <div class="card"></div>
-  </main> 
+    // 2. Active Session Variables
+    let currentSession = JSON.parse(localStorage.getItem(SESSION_KEY)) || null;
+    let modalMode = "signup"; // Tracks "signup" or "login" form view
 
-  <script>
-    // Live Account Data Memory Object
-    let accountState = {
-      isLoggedIn: false,
-      username: "",
-      isEmailVerified: false
-    };
+    const authBox = document.getElementById("authBox");
+    const verificationBanner = document.getElementById("verificationBanner");
+    const authModal = document.getElementById("authModal");
 
-    // Swaps interface layouts based on login statuses
-    function drawAuthSystem() {
-      const authBox = document.getElementById("authBox");
-      const verificationBanner = document.getElementById("verificationBanner");
-
-      if (accountState.isLoggedIn) {
-        // Logged In Design
+    // Redraws the navbar elements based on logged-in state
+    function renderAuthUI() {
+      if (currentSession) {
+        // User is logged in
         authBox.innerHTML = `
-          <span class="username-display">🎮 ${accountState.username}</span>
+          <span class="username-display">🎮 ${currentSession.username}</span>
           <button class="signout-btn" id="signOutBtn">Sign Out</button>
         `;
 
-        // Bind Sign Out function action
         document.getElementById("signOutBtn").addEventListener("click", () => {
-          accountState.isLoggedIn = false;
-          accountState.username = "";
-          accountState.isEmailVerified = false;
-          drawAuthSystem();
+          localStorage.removeItem(SESSION_KEY);
+          currentSession = null;
+          renderAuthUI();
         });
 
-        // Determine if email alert panel requires rendering
-        if (!accountState.isEmailVerified) {
+        // Check verification database status
+        const db = getUsersDB();
+        const userFile = db[currentSession.username.toLowerCase()];
+
+        if (userFile && !userFile.verified) {
           verificationBanner.style.display = "flex";
+          // Prints verification code to developer console instead of sending real email
+          console.log(`[egg arcade Email Network] Code for ${userFile.email}: ${userFile.verificationCode}`);
         } else {
           verificationBanner.style.display = "none";
         }
-
       } else {
-        // Logged Out Design (Inputs to sign up or join)
-        authBox.innerHTML = `
-          <input type="text" class="auth-input" id="usernameInput" placeholder="username">
-          <input type="email" class="auth-input" id="emailInput" placeholder="email">
-          <button class="auth-btn" id="loginBtn">Join / Log In</button>
-        `;
-
-        // Hide alert block when user isn't logged into anything
+        // User is logged out
+        authBox.innerHTML = `<button class="auth-btn" id="openAuthBtn">Join / Log In</button>`;
         verificationBanner.style.display = "none";
 
-        // Bind Registration click action
-        document.getElementById("loginBtn").addEventListener("click", () => {
-          const nameValue = document.getElementById("usernameInput").value.trim();
-          const emailValue = document.getElementById("emailInput").value.trim();
-
-          if (nameValue === "" || emailValue === "") {
-            alert("Please enter both fields to create your profile layout.");
-            return;
-          }
-
-          accountState.isLoggedIn = true;
-          accountState.username = nameValue;
-          accountState.isEmailVerified = false;
-          drawAuthSystem();
+        document.getElementById("openAuthBtn").addEventListener("click", () => {
+          authModal.style.display = "flex";
         });
       }
-    }
-
+    } 
+    // 3. Document Action Handlers
     document.addEventListener("DOMContentLoaded", () => {
-      // Build UI states on load
-      drawAuthSystem();
+      // Build initial layout state
+      renderAuthUI();
 
-      // Bind dynamic confirmation verification button action click
-      document.getElementById("verifyMockBtn").addEventListener("click", () => {
-        accountState.isEmailVerified = true;
-        alert("Success! Your email state is verified.");
-        drawAuthSystem();
+      // Close pop-up window if clicking the outside overlay background area
+      authModal.addEventListener("click", (e) => {
+        if (e.target === authModal) authModal.style.display = "none";
       });
 
-      // Original 12 card console framework log
+      // Swaps the pop-up modal view between Sign Up and Log In fields
+      document.getElementById("modalToggle").addEventListener("click", () => {
+        const emailField = document.getElementById("formEmail");
+        if (modalMode === "signup") {
+          modalMode = "login";
+          document.getElementById("modalTitle").textContent = "Log In";
+          document.getElementById("formSubmitBtn").textContent = "Log In";
+          document.getElementById("modalToggle").textContent = "Need an account? Sign Up";
+          emailField.style.display = "none";
+          emailField.removeAttribute("required");
+        } else {
+          modalMode = "signup";
+          document.getElementById("modalTitle").textContent = "Create Account";
+          document.getElementById("formSubmitBtn").textContent = "Sign Up";
+          document.getElementById("modalToggle").textContent = "Already have an account? Log In";
+          emailField.style.display = "block";
+          emailField.setAttribute("required", "required");
+        }
+      });
+
+      // Intercepts the form box submit button to handle database actions
+      document.getElementById("modalForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const usernameInput = document.getElementById("formUsername").value.trim();
+        const emailInput = document.getElementById("formEmail").value.trim();
+        const passwordInput = document.getElementById("formPassword").value;
+        
+        const db = getUsersDB();
+        const userKey = usernameInput.toLowerCase();
+
+        if (modalMode === "signup") {
+          // Double check if account data exists in database memory
+          if (db[userKey]) {
+            alert("Error: That username is already taken!");
+            return;
+          }
+          
+          const passwordHash = await hashPassword(passwordInput);
+          // Generate a genuine 6-digit verification code string
+          const generatedCode = Math.floor(100000 + Math.random() * 900000).toString();
+
+          db[userKey] = {
+            username: usernameInput,
+            email: emailInput,
+            password: passwordHash,
+            verified: false,
+            verificationCode: generatedCode
+          };
+          saveUsersDB(db);
+
+          currentSession = { username: usernameInput };
+          localStorage.setItem(SESSION_KEY, JSON.stringify(currentSession));
+          alert("Account created! Check your browser inspection console log for your verification code.");
+        } else {
+          // Secure layout credential checking logic
+          if (!db[userKey]) {
+            alert("Error: Account username does not exist!");
+            return;
+          }
+          const checkHash = await hashPassword(passwordInput);
+          if (db[userKey].password !== checkHash) {
+            alert("Error: Incorrect password.");
+            return;
+          }
+          currentSession = { username: db[userKey].username };
+          localStorage.setItem(SESSION_KEY, JSON.stringify(currentSession));
+        }
+
+        document.getElementById("modalForm").reset();
+        authModal.style.display = "none";
+        renderAuthUI();
+      });
+
+      // Validates verification inputs against the secure stored key
+      document.getElementById("submitVerifyBtn").addEventListener("click", () => {
+        if (!currentSession) return;
+        const codeEntered = document.getElementById("verifyCodeInput").value.trim();
+        const db = getUsersDB();
+        const userKey = currentSession.username.toLowerCase();
+        const userFile = db[userKey];
+
+        if (userFile && userFile.verificationCode === codeEntered) {
+          userFile.verified = true;
+          saveUsersDB(db);
+          alert("Success! Your account has been securely verified.");
+          renderAuthUI();
+        } else {
+          alert("Invalid code. Please double-check your browser console logs.");
+        }
+      });
+
+      // Original 12 box card layout clicking tracker
       const cards = document.querySelectorAll(".card");
       cards.forEach((card, index) => {
         card.addEventListener("click", () => {
@@ -244,6 +395,5 @@
       });
     });
   </script>
-
 </body>
 </html>
