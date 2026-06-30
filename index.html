@@ -14,31 +14,48 @@
     }
 
     body {
-      background-color: #ffffff;
+      background-color: #111111; /* Dark theme to make arcade neon stand out */
+      color: #ffffff;
       padding: 20px;
+      font-family: 'Arial Black', sans-serif;
     }
 
     /* Header Navbar */
     .top-nav {
       width: 100%;
-      height: 50px;
-      border: 2px solid #000000;
+      height: 70px;
+      border-bottom: 3px solid #ffcc00; /* Signature yellow accent line */
       position: relative;
       margin-bottom: 25px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 10px;
+    }
+
+    /* Brand Logo styling matching your design */
+    .brand-title {
+      font-style: italic;
+      font-size: 28px;
+    }
+    .brand-title span {
+      color: #ffcc00; /* 'egg' in yellow */
+      margin-right: 5px;
     }
 
     /* Styled Text Box Input */
     .search-input {
       width: 30%;
-      height: 25px;
-      border: 1px solid #000000;
-      position: absolute;
-      right: 15px;
-      top: 50%;
-      transform: translateY(-50%);
-      padding: 0 10px; /* Adds space for internal typing text */
-      outline: none;  /* Removes browser default focus outlines */
-      font-family: sans-serif;
+      height: 35px;
+      border: 2px solid #ffffff;
+      background: #222;
+      color: white;
+      padding: 0 15px; 
+      outline: none;  
+      border-radius: 4px;
+    }
+    .search-input:focus {
+      border-color: #ffcc00; /* Flashes yellow when typing */
     }
 
     /* 3-Column Content Grid */
@@ -51,53 +68,176 @@
 
     /* Grid Cards */
     .card {
-      flex: 1 1 calc(33.333% - 14px); /* Creates 3 columns accounting for gap */
-      min-width: 250px; /* Forces boxes to stack cleanly on small mobile screens */
-      height: 150px;
-      border: 2px solid #000000;
+      flex: 1 1 calc(33.333% - 14px); 
+      min-width: 250px; 
+      height: 180px;
+      border: 2px solid #333333;
+      background: #1a1a1a;
       cursor: pointer;
+      border-radius: 8px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 15px;
+      position: relative;
+      transition: transform 0.1s ease;
+    }
+
+    /* Thumbnail Placeholder simulation */
+    .card::before {
+      content: '🎮';
+      position: absolute;
+      top: 30%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 40px;
+      opacity: 0.3;
+    }
+
+    .card h3 {
+      font-size: 16px;
+      color: #ffcc00;
+      z-index: 2;
+    }
+    .card p {
+      font-size: 11px;
+      color: #aaaaaa;
+      font-family: sans-serif;
+      z-index: 2;
+      margin-top: 4px;
     }
 
     .card:hover {
-      border: 3px dotted black;
+      border: 2px solid #ffcc00;
+      transform: scale(1.02);
+    }
+
+    /* Game Play Popup Modal Overlay */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 10;
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-content {
+      background: #222;
+      border: 3px solid #ffcc00;
+      padding: 30px;
+      border-radius: 12px;
+      text-align: center;
+      width: 90%;
+      max-width: 700px;
+    }
+    .game-screen {
+      width: 100%;
+      height: 380px;
+      background: black;
+      border: 2px solid #444;
+      margin: 15px 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #444;
+    }
+    .close-btn {
+      background: #ffcc00;
+      color: black;
+      border: none;
+      padding: 8px 16px;
+      font-family: 'Arial Black', sans-serif;
+      cursor: pointer;
+      border-radius: 4px;
     }
   </style>
 </head>
 <body>
 
-  <!-- Top Navigation Wireframe -->
+  <!-- Top Navigation -->
   <header class="top-nav">
-    <!-- Replaced div with an actual semantic text input -->
-    <input type="text" class="search-input" placeholder="search...">
+    <div class="brand-title"><span>egg</span>arcade<sup>™</sup></div>
+    <input type="text" class="search-input" placeholder="search games...">
   </header>
 
-  <!-- 12-Box Grid Wireframe -->
+  <!-- 12-Box Grid Layout with real metadata parameters -->
   <main class="grid-container">
-    <div class="card"></div>
-    <div class="card"></div>
-    <div class="card"></div>
-    <div class="card"></div>
-    <div class="card"></div>
-    <div class="card"></div>
-    <div class="card"></div>
-    <div class="card"></div>
-    <div class="card"></div>
-    <div class="card"></div>
-    <div class="card"></div>
-    <div class="card"></div>
+    <div class="card" data-title="Neon Platformer v1.0" data-creator="DashMaster">
+      <h3>Neon Platformer v1.0</h3><p>By: DashMaster</p>
+    </div>
+    <div class="card" data-title="Spike Jumper 2" data-creator="PixelGuy">
+      <h3>Spike Jumper 2</h3><p>By: PixelGuy</p>
+    </div>
+    <div class="card" data-title="Geometry Block" data-creator="CubeRunner">
+      <h3>Geometry Block</h3><p>By: CubeRunner</p>
+    </div>
+    <div class="card" data-title="Lawson Retro Grid" data-creator="ArcadeFan">
+      <h3>Lawson Retro Grid</h3><p>By: ArcadeFan</p>
+    </div>
+    <div class="card" data-title="Egg Dash" data-creator="YolkDev">
+      <h3>Egg Dash</h3><p>By: YolkDev</p>
+    </div>
+    <div class="card" data-title="Gravity Flip" data-creator="ZeroG">
+      <h3>Gravity Flip</h3><p>By: ZeroG</p>
+    </div>
+    <div class="card" data-title="Speedway Dash" data-creator="SonicSpeed">
+      <h3>Speedway Dash</h3><p>By: SonicSpeed</p>
+    </div>
+    <div class="card" data-title="The Floor Is Spikes" data-creator="LevelMaker">
+      <h3>The Floor Is Spikes</h3><p>By: LevelMaker</p>
+    </div>
+    <div class="card" data-title="Classic Jump Arcade" data-creator="RetroKid">
+      <h3>Classic Jump Arcade</h3><p>By: RetroKid</p>
+    </div>
+    <div class="card" data-title="Infinite Dash" data-creator="Runner99">
+      <h3>Infinite Dash</h3><p>By: Runner99</p>
+    </div>
+    <div class="card" data-title="Grid Escape" data-creator="CodeBuilder">
+      <h3>Grid Escape</h3><p>By: CodeBuilder</p>
+    </div>
+    <div class="card" data-title="Ultimate Cube Challenge" data-creator="EggStudioUser">
+      <h3>Ultimate Cube Challenge</h3><p>By: EggStudioUser</p>
+    </div>
   </main> 
+
+  <!-- Game Play Overlay Windows -->
+  <div class="modal-overlay" id="gameModal">
+    <div class="modal-content">
+      <h2 id="modalTitle">Game Title</h2>
+      <p id="modalCreator" style="font-family: sans-serif; font-size: 13px; color: #aaa;">By: Creator</p>
+      <div class="game-screen">
+        <h3>[ Web Game Engine Loading Canvas ]</h3>
+      </div>
+      <button class="close-btn" id="closeBtn">CLOSE GAME</button>
+    </div>
+  </div>
 
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const cards = document.querySelectorAll(".card");
+      const modal = document.getElementById("gameModal");
+      const modalTitle = document.getElementById("modalTitle");
+      const modalCreator = document.getElementById("modalCreator");
+      const closeBtn = document.getElementById("closeBtn");
       
-      cards.forEach((card, index) => {
-        // Optional JS interactivity hook
+      cards.forEach((card) => {
         card.addEventListener("click", () => {
-          alert('cheese')
+          // Extracts info directly from the item clicked
+          const title = card.getAttribute("data-title");
+          const creator = card.getAttribute("data-creator");
           
-          ;
+          // Loads it directly into your play overlay window!
+          modalTitle.innerText = title;
+          modalCreator.innerText = "Created using Studio by: " + creator;
+          modal.style.display = "flex";
         });
+      });
+
+      // Closes down your window cleanly
+      closeBtn.addEventListener("click", () => {
+        modal.style.display = "none";
       });
     });
   </script>
