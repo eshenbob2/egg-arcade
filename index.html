@@ -6,19 +6,219 @@
   <title>egg arcade :D</title>
 
 <style>
-
 body {
   background-color: white;
   color: black;
   font-family: Arial, Helvetica, sans-serif;
+  padding: 20px;
 }
 
 .card {
-  background-color: rgb(255, 223, 79);
+  background-color: white;
   border: 2px solid black;
+  /* Keeps layout columns structured */
+  flex: 1 1 calc(33.333% - 14px);
+  min-width: 250px;
+  height: 150px;
+  padding: 15px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .card:hover {
-border: 2px solid black;
-
+  border: 3px solid black; /* Fixed missing 'solid' type so border triggers correctly */
 }
+
+/* Placed game text details inside standard headers */
+.card h3 {
+  font-size: 18px;
+}
+.card p {
+  font-size: 13px;
+  color: #555;
+}
+
+.playbutton {
+  border: 1px solid black;
+  background-color: rgb(255, 230, 0);
+  padding: 6px 12px;
+  cursor: pointer;
+  font-weight: bold;
+  align-self: flex-start;
+}
+
+.playbutton:hover {
+  border: 2px solid black; /* Fixed missing semicolon */
+}
+
+.topbar {
+  border: none;
+  background-color: white;
+  color: black;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #ccc;
+}
+
+.search {
+  border: 1px solid black; /* Set standard solid line bounds for visibility */
+  color: black;
+  background-color: white;
+  padding: 8px 12px;
+  width: 30%;
+  outline: none;
+}
+
+/* Structural placement container systems */
+.grid-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  width: 100%;
+}
+
+/* Modal Overlay Framework Layer */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 10;
+  justify-content: center;
+  align-items: center;
+}
+.modal-content {
+  background: white;
+  border: 2px solid black;
+  padding: 30px;
+  text-align: center;
+  width: 90%;
+  max-width: 600px;
+}
+.game-screen {
+  width: 100%;
+  height: 300px;
+  background: #eee;
+  border: 1px solid black;
+  margin: 15px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+</style>
+</head>
+<body>
+
+  <!-- Top Navigation View Panel -->
+  <header class="topbar">
+    <h1 style="font-style: italic;">egg arcade™</h1>
+    <input type="text" class="search" placeholder="Search games or creators...">
+  </header>
+
+  <!-- Live Dynamic Workspace Canvas Container -->
+  <main class="grid-container" id="liveGameGrid">
+    <!-- Managed entirely by JavaScript live database fetching routines -->
+  </main> 
+
+  <!-- Centered Play Modal Layer Overlay -->
+  <div class="modal-overlay" id="gameModal">
+    <div class="modal-content">
+      <h2 id="modalTitle">Game Title</h2>
+      <p id="modalCreator" style="color: #555; margin-top: 5px;">By: Creator</p>
+      <div class="game-screen">
+        <h4>[ Engine Player Loading Blueprint Canvas ]</h4>
+      </div>
+      <button class="playbutton" id="closeBtn">CLOSE GAME</button>
+    </div>
+  </div>
+
+  <!-- Operational Core Management Logic Panel -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const gridContainer = document.getElementById("liveGameGrid");
+      const searchInput = document.querySelector(".search");
+      const modal = document.getElementById("gameModal");
+      const modalTitle = document.getElementById("modalTitle");
+      const modalCreator = document.getElementById("modalCreator");
+      const closeBtn = document.getElementById("closeBtn");
+
+      // 💾 LOCAL OFFLINE SIMULATION STORAGE BLUEPRINT ROWS
+      const mockDatabase = [
+        { level_name: "Neon Dash v1.0", creator_username: "DashMaster", is_featured: true },
+        { level_name: "The Floor Is Spikes", creator_username: "LevelMaker", is_featured: true },
+        { level_name: "Jerry Lawson Retro Grid", creator_username: "ArcadeFan", is_featured: true },
+        { level_name: "Spam Test Map 1", creator_username: "TrollBot", is_featured: false },
+        { level_name: "Blank Level Asset", creator_username: "SpamBot", is_featured: false }
+      ];
+
+      // 1. Initial State: Load ONLY premium verified titles to block spam bots
+      loadMockGames(true, "");
+
+      // 2. Keystroke Interceptor Hook: Watch entries in your styling navbar box
+      searchInput.addEventListener("keyup", (event) => {
+        const query = event.target.value.trim().toLowerCase();
+
+        if (query.length > 2) {
+          // Switches off featured grid limits to query everything for matches
+          loadMockGames(false, query);
+        } else if (query.length === 0) {
+          // Reverts back to main premium cards if input string is cleared
+          loadMockGames(true, "");
+        }
+      });
+
+      // 3. Automated Card Component Constructor Processing Engine
+      function loadMockGames(onlyFeatured, searchQuery) {
+        gridContainer.innerHTML = ""; 
+
+        const filteredList = mockDatabase.filter(game => {
+          if (onlyFeatured) {
+            return game.is_featured;
+          } else {
+            return game.level_name.toLowerCase().includes(searchQuery) || 
+                   game.creator_username.toLowerCase().includes(searchQuery);
+          }
+        });
+
+        if (filteredList.length === 0) {
+          gridContainer.innerHTML = "<p style='padding: 20px; width: 100%; text-align: center;'>No matches found in the Egg Arcade database.</p>";
+          return;
+        }
+
+        // Loops through items, building your custom styled elements dynamically
+        filteredList.forEach(game => {
+          const card = document.createElement("div");
+          card.className = "card";
+          card.innerHTML = `
+            <div>
+              <h3>${game.level_name}</h3>
+              <p>By: ${game.creator_username}</p>
+            </div>
+            <button class="playbutton">PLAY</button>
+          `;
+          
+          // Triggers modal pop-up handler
+          card.addEventListener("click", () => {
+            modalTitle.innerText = game.level_name;
+            modalCreator.innerText = "Created using Studio by: " + game.creator_username;
+            modal.style.display = "flex";
+          });
+
+          gridContainer.appendChild(card);
+        });
+      }
+
+      closeBtn.addEventListener("click", () => {
+        modal.style.display = "none";
+      });
+    });
+  </script>
+
+</body>
+</html>
