@@ -4,17 +4,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>egg arcade</title>
-  <!-- CSS will go below here -->
+  <!-- CSS Styles go here later -->
 </head>
 <body>
 
-  <!-- Top Navigation Bar -->
+  <!-- Top Navigation Header Layout -->
   <header class="top-nav">
     <div class="auth-container" id="authBox"></div>
     <input type="text" class="search-input" placeholder="search...">
   </header>
 
-  <!-- Real Email Verification Alert Banner -->
+  <!-- Email Verification Alert Banner Layout -->
   <div class="verification-banner" id="verificationBanner" style="display: none;">
     <span id="bannerText">⚠️ Account unverified. Check your browser console log for your code.</span>
     <div>
@@ -23,7 +23,7 @@
     </div>
   </div>
 
-  <!-- Real Login/Signup Modal Window (Hidden by Default) -->
+  <!-- Account Sign In/Sign Up Modal Form Window -->
   <div class="modal-overlay" id="authModal" style="display: none;">
     <div class="modal-box">
       <h2 id="modalTitle">Create Account</h2>
@@ -37,14 +37,14 @@
     </div>
   </div>
 
-  <!-- 12-Box Games Grid -->
+  <!-- 12-Box Content Grid Layout -->
   <main class="grid-container">
     <div class="card"></div><div class="card"></div><div class="card"></div><div class="card"></div>
     <div class="card"></div><div class="card"></div><div class="card"></div><div class="card"></div>
     <div class="card"></div><div class="card"></div><div class="card"></div><div class="card"></div>
   </main> 
 
-  <!-- JavaScript will go below here -->
+  <!-- JavaScript Engines go here later -->
 </body>
 </html>
   <style>
@@ -72,7 +72,7 @@
       padding: 0 15px;
     }
 
-    /* Auth System Navigation Wrapper */
+    /* Auth Navigation Container Wrapper */
     .auth-container {
       display: flex;
       align-items: center;
@@ -221,6 +221,7 @@
       border: 3px dotted black;
     }
   </style>
+  <script>
     // 1. Storage & Account Database Controllers
     const DB_KEY = "eggArcade_users";
     const SESSION_KEY = "eggArcade_session";
@@ -284,7 +285,7 @@
           authModal.style.display = "flex";
         });
       }
-    } 
+    }
     // 3. Document Action Handlers
     document.addEventListener("DOMContentLoaded", () => {
       // Build initial layout state
