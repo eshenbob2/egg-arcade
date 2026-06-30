@@ -16,7 +16,7 @@ body {
 .card {
   background-color: white;
   border: 2px solid black;
-  /* Keeps layout columns structured */
+  /* Layout constraints matching original grid specifications */
   flex: 1 1 calc(33.333% - 14px);
   min-width: 250px;
   height: 150px;
@@ -28,12 +28,12 @@ body {
 }
 
 .card:hover {
-  border: 3px solid black; /* Fixed missing 'solid' type so border triggers correctly */
+  border: 3px solid black; 
 }
 
-/* Placed game text details inside standard headers */
 .card h3 {
   font-size: 18px;
+  margin-bottom: 5px;
 }
 .card p {
   font-size: 13px;
@@ -50,7 +50,7 @@ body {
 }
 
 .playbutton:hover {
-  border: 2px solid black; /* Fixed missing semicolon */
+  border: 2px solid black; 
 }
 
 .topbar {
@@ -67,7 +67,7 @@ body {
 }
 
 .search {
-  border: 1px solid black; /* Set standard solid line bounds for visibility */
+  border: 1px solid black; 
   color: black;
   background-color: white;
   padding: 8px 12px;
@@ -75,7 +75,6 @@ body {
   outline: none;
 }
 
-/* Structural placement container systems */
 .grid-container {
   display: flex;
   flex-wrap: wrap;
@@ -83,9 +82,9 @@ body {
   width: 100%;
 }
 
-/* Modal Overlay Framework Layer */
+/* Modal Window Layout Styles */
 .modal-overlay {
-  display: none;
+  display: none; 
   position: fixed;
   top: 0; left: 0; width: 100%; height: 100%;
   background: rgba(0, 0, 0, 0.7);
@@ -121,9 +120,53 @@ body {
     <input type="text" class="search" placeholder="Search games or creators...">
   </header>
 
-  <!-- Live Dynamic Workspace Canvas Container -->
+  <!-- Hardcoded Anti-Spam Protected Live Grid Elements -->
   <main class="grid-container" id="liveGameGrid">
-    <!-- Managed entirely by JavaScript live database fetching routines -->
+    
+    <!-- Game Card 1 (Featured) -->
+    <div class="card" data-featured="true">
+      <div>
+        <h3>Neon Dash v1.0</h3>
+        <p>By: DashMaster</p>
+      </div>
+      <button class="playbutton">PLAY</button>
+    </div>
+
+    <!-- Game Card 2 (Featured) -->
+    <div class="card" data-featured="true">
+      <div>
+        <h3>The Floor Is Spikes</h3>
+        <p>By: LevelMaker</p>
+      </div>
+      <button class="playbutton">PLAY</button>
+    </div>
+
+    <!-- Game Card 3 (Featured) -->
+    <div class="card" data-featured="true">
+      <div>
+        <h3>Jerry Lawson Retro Grid</h3>
+        <p>By: ArcadeFan</p>
+      </div>
+      <button class="playbutton">PLAY</button>
+    </div>
+
+    <!-- Hidden Spam Database Records (Only visible via Search query entries) -->
+    <div class="card" data-featured="false" style="display: none;">
+      <div>
+        <h3>Spam Test Map 1</h3>
+        <p>By: TrollBot</p>
+      </div>
+      <button class="playbutton">PLAY</button>
+    </div>
+
+    <div class="card" data-featured="false" style="display: none;">
+      <div>
+        <h3>Blank Level Asset</h3>
+        <p>By: SpamBot</p>
+      </div>
+      <button class="playbutton">PLAY</button>
+    </div>
+
   </main> 
 
   <!-- Centered Play Modal Layer Overlay -->
@@ -138,82 +181,58 @@ body {
     </div>
   </div>
 
-  <!-- Operational Core Management Logic Panel -->
+  <!-- Operational Search & Modal Interactivity Controller Scripts -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
-      const gridContainer = document.getElementById("liveGameGrid");
+      const cards = document.querySelectorAll(".card");
       const searchInput = document.querySelector(".search");
       const modal = document.getElementById("gameModal");
       const modalTitle = document.getElementById("modalTitle");
       const modalCreator = document.getElementById("modalCreator");
       const closeBtn = document.getElementById("closeBtn");
 
-      // 💾 LOCAL OFFLINE SIMULATION STORAGE BLUEPRINT ROWS
-      const mockDatabase = [
-        { level_name: "Neon Dash v1.0", creator_username: "DashMaster", is_featured: true },
-        { level_name: "The Floor Is Spikes", creator_username: "LevelMaker", is_featured: true },
-        { level_name: "Jerry Lawson Retro Grid", creator_username: "ArcadeFan", is_featured: true },
-        { level_name: "Spam Test Map 1", creator_username: "TrollBot", is_featured: false },
-        { level_name: "Blank Level Asset", creator_username: "SpamBot", is_featured: false }
-      ];
-
-      // 1. Initial State: Load ONLY premium verified titles to block spam bots
-      loadMockGames(true, "");
-
-      // 2. Keystroke Interceptor Hook: Watch entries in your styling navbar box
-      searchInput.addEventListener("keyup", (event) => {
-        const query = event.target.value.trim().toLowerCase();
-
-        if (query.length > 2) {
-          // Switches off featured grid limits to query everything for matches
-          loadMockGames(false, query);
-        } else if (query.length === 0) {
-          // Reverts back to main premium cards if input string is cleared
-          loadMockGames(true, "");
-        }
+      // 1. Click Listener Action: Maps your custom layout items to your modal player
+      cards.forEach(card => {
+        card.addEventListener("click", () => {
+          const gameTitle = card.querySelector("h3").innerText;
+          const gameCreator = card.querySelector("p").innerText;
+          
+          modalTitle.innerText = gameTitle;
+          modalCreator.innerText = "Created using Studio " + gameCreator;
+          modal.style.display = "flex";
+        });
       });
 
-      // 3. Automated Card Component Constructor Processing Engine
-      function loadMockGames(onlyFeatured, searchQuery) {
-        gridContainer.innerHTML = ""; 
+      // 2. Search Box Keystroke Interceptor Filter
+      searchInput.addEventListener("keyup", (event) => {
+        const query = event.target.value.trim().toLowerCase();
+        let matchesFound = false;
 
-        const filteredList = mockDatabase.filter(game => {
-          if (onlyFeatured) {
-            return game.is_featured;
-          } else {
-            return game.level_name.toLowerCase().includes(searchQuery) || 
-                   game.creator_username.toLowerCase().includes(searchQuery);
+        cards.forEach(card => {
+          const gameTitle = card.querySelector("h3").innerText.toLowerCase();
+          const gameCreator = card.querySelector("p").innerText.toLowerCase();
+          const isFeatured = card.getAttribute("data-featured") === "true";
+
+          if (query.length > 2) {
+            // Typing more than 2 characters searches EVERYTHING across the grid layout
+            if (gameTitle.includes(query) || gameCreator.includes(query)) {
+              card.style.display = "flex";
+              matchesFound = true;
+            } else {
+              card.style.display = "none";
+            }
+          } else if (query.length === 0) {
+            // Clearing the search bar filters back to Premium Featured items automatically
+            if (isFeatured) {
+              card.style.display = "flex";
+            } else {
+              card.style.display = "none";
+            }
           }
         });
+      });
 
-        if (filteredList.length === 0) {
-          gridContainer.innerHTML = "<p style='padding: 20px; width: 100%; text-align: center;'>No matches found in the Egg Arcade database.</p>";
-          return;
-        }
-
-        // Loops through items, building your custom styled elements dynamically
-        filteredList.forEach(game => {
-          const card = document.createElement("div");
-          card.className = "card";
-          card.innerHTML = `
-            <div>
-              <h3>${game.level_name}</h3>
-              <p>By: ${game.creator_username}</p>
-            </div>
-            <button class="playbutton">PLAY</button>
-          `;
-          
-          // Triggers modal pop-up handler
-          card.addEventListener("click", () => {
-            modalTitle.innerText = game.level_name;
-            modalCreator.innerText = "Created using Studio by: " + game.creator_username;
-            modal.style.display = "flex";
-          });
-
-          gridContainer.appendChild(card);
-        });
-      }
-
+      // Close handler routines
       closeBtn.addEventListener("click", () => {
         modal.style.display = "none";
       });
