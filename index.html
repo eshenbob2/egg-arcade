@@ -50,47 +50,13 @@
     }
 
     /* Grid Cards */
- /* Split the card vertically: 75% thumbnail area, 25% text area */
-.card {
-  display: flex;
-  flex-direction: column;
-  overflow: hidden; /* Prevents inner content from spilling over borders */
-}
-
-/* Simulated Game Thumbnail Area */
-.card-thumb {
-  flex: 3;
-  background-color: #f0f0f0;
-  border-bottom: 1px solid #000000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: sans-serif;
-  font-size: 14px;
-  color: #777777;
-}
-
-/* Info container for text details */
-.card-info {
-  flex: 1;
-  padding: 5px 10px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  font-family: sans-serif;
-}
-
-.game-title {
-  font-weight: bold;
-  font-size: 14px;
-  color: #000000;
-}
-
-.game-creator {
-  font-size: 11px;
-  color: #666666;
-}
-
+    .card {
+      flex: 1 1 calc(33.333% - 14px); /* Creates 3 columns accounting for gap */
+      min-width: 250px; /* Forces boxes to stack cleanly on small mobile screens */
+      height: 150px;
+      border: 2px solid #000000;
+      cursor: pointer;
+    }
 
     .card:hover {
       border: 3px dotted black;
@@ -106,31 +72,20 @@
   </header>
 
   <!-- 12-Box Grid Wireframe -->
-     <!-- 12-Box Grid Wireframe with Game Info Slots -->
   <main class="grid-container">
-    
-    <!-- Game Card Example 1 -->
-    <div class="card">
-      <div class="card-thumb">Thumbnail Preview</div>
-      <div class="card-info">
-        <div class="game-title">Mega Obby 🚀</div>
-        <div class="game-creator">by CreatorXYZ</div>
-      </div>
-    </div>
-
-    <!-- Game Card Example 2 -->
-    <div class="card">
-      <div class="card-thumb">Thumbnail Preview</div>
-      <div class="card-info">
-        <div class="game-title">Pixel Tycoon 🏗️</div>
-        <div class="game-creator">by DevStudio</div>
-      </div>
-    </div>
-
-    <!-- Repeat this structured 3-part layout pattern for your remaining 10 cards... -->
-
+    <div class="card"></div>
+    <div class="card"></div>
+    <div class="card"></div>
+    <div class="card"></div>
+    <div class="card"></div>
+    <div class="card"></div>
+    <div class="card"></div>
+    <div class="card"></div>
+    <div class="card"></div>
+    <div class="card"></div>
+    <div class="card"></div>
+    <div class="card"></div>
   </main> 
-
 
   <script>
     document.addEventListener("DOMContentLoaded", () => {
@@ -147,3 +102,4 @@
 
 </body>
 </html>
+
