@@ -222,7 +222,7 @@
     }
   </style>
   <script>
-    // 1. Storage & Account Database Controllers
+        // 1. Storage & Account Database Controllers
     const DB_KEY = "eggArcade_users";
     const SESSION_KEY = "eggArcade_session";
 
@@ -242,9 +242,47 @@
       return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
     }
 
+    // REAL BACKEND EMAIL DISPATCH ENGINE
+    // You can sign up for a free account at emailjs.com to get your keys!
+    function sendRealVerificationEmail(targetEmail, targetUser, code) {
+      // These credentials link your code to a real mail server delivery network
+      const PUBLIC_KEY = "YOUR_EMAILJS_PUBLIC_KEY"; 
+      const SERVICE_ID = "YOUR_SERVICE_ID";
+      const TEMPLATE_ID = "YOUR_TEMPLATE_ID";
+
+      // If you haven't put your keys in yet, this alerts you so you know it's trying to send
+      if(PUBLIC_KEY === "YOUR_EMAILJS_PUBLIC_KEY") {
+        console.warn("Email service ready. Add your free EmailJS keys to send real mail to inboxes!");
+        return;
+      }
+
+      // Pack data payload
+      const emailParams = {
+        to_email: targetEmail,
+        to_name: targetUser,
+        verification_code: code
+      };
+
+      // Dispatches request over HTTPS to EmailJS API gateway
+      fetch("https://emailjs.com", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          user_id: PUBLIC_KEY,
+          service_id: SERVICE_ID,
+          template_id: TEMPLATE_ID,
+          template_params: emailParams
+        })
+      })
+      .then(response => {
+        if (response.ok) alert(`Security code dispatched to real inbox: ${targetEmail}`);
+        else alert("Email network delivery failed. Check API configurations.");
+      });
+    }
+
     // 2. Active Session Variables
     let currentSession = JSON.parse(localStorage.getItem(SESSION_KEY)) || null;
-    let modalMode = "signup"; // Tracks "signup" or "login" form view
+    let modalMode = "signup"; 
 
     const authBox = document.getElementById("authBox");
     const verificationBanner = document.getElementById("verificationBanner");
@@ -253,7 +291,6 @@
     // Redraws the navbar elements based on logged-in state
     function renderAuthUI() {
       if (currentSession) {
-        // User is logged in
         authBox.innerHTML = `
           <span class="username-display">🎮 ${currentSession.username}</span>
           <button class="signout-btn" id="signOutBtn">Sign Out</button>
@@ -265,19 +302,16 @@
           renderAuthUI();
         });
 
-        // Check verification database status
         const db = getUsersDB();
         const userFile = db[currentSession.username.toLowerCase()];
 
+        // The banner shows up, but NEVER reveals the code to the screen anymore!
         if (userFile && !userFile.verified) {
           verificationBanner.style.display = "flex";
-          // Prints verification code to developer console instead of sending real email
-          console.log(`[egg arcade Email Network] Code for ${userFile.email}: ${userFile.verificationCode}`);
         } else {
           verificationBanner.style.display = "none";
         }
       } else {
-        // User is logged out
         authBox.innerHTML = `<button class="auth-btn" id="openAuthBtn">Join / Log In</button>`;
         verificationBanner.style.display = "none";
 
@@ -286,115 +320,7 @@
         });
       }
     }
-    // 3. Document Action Handlers
-    document.addEventListener("DOMContentLoaded", () => {
-      // Build initial layout state
-      renderAuthUI();
 
-      // Close pop-up window if clicking the outside overlay background area
-      authModal.addEventListener("click", (e) => {
-        if (e.target === authModal) authModal.style.display = "none";
-      });
-
-      // Swaps the pop-up modal view between Sign Up and Log In fields
-      document.getElementById("modalToggle").addEventListener("click", () => {
-        const emailField = document.getElementById("formEmail");
-        if (modalMode === "signup") {
-          modalMode = "login";
-          document.getElementById("modalTitle").textContent = "Log In";
-          document.getElementById("formSubmitBtn").textContent = "Log In";
-          document.getElementById("modalToggle").textContent = "Need an account? Sign Up";
-          emailField.style.display = "none";
-          emailField.removeAttribute("required");
-        } else {
-          modalMode = "signup";
-          document.getElementById("modalTitle").textContent = "Create Account";
-          document.getElementById("formSubmitBtn").textContent = "Sign Up";
-          document.getElementById("modalToggle").textContent = "Already have an account? Log In";
-          emailField.style.display = "block";
-          emailField.setAttribute("required", "required");
-        }
-      });
-
-      // Intercepts the form box submit button to handle database actions
-      document.getElementById("modalForm").addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const usernameInput = document.getElementById("formUsername").value.trim();
-        const emailInput = document.getElementById("formEmail").value.trim();
-        const passwordInput = document.getElementById("formPassword").value;
-        
-        const db = getUsersDB();
-        const userKey = usernameInput.toLowerCase();
-
-        if (modalMode === "signup") {
-          // Double check if account data exists in database memory
-          if (db[userKey]) {
-            alert("Error: That username is already taken!");
-            return;
-          }
-          
-          const passwordHash = await hashPassword(passwordInput);
-          // Generate a genuine 6-digit verification code string
-          const generatedCode = Math.floor(100000 + Math.random() * 900000).toString();
-
-          db[userKey] = {
-            username: usernameInput,
-            email: emailInput,
-            password: passwordHash,
-            verified: false,
-            verificationCode: generatedCode
-          };
-          saveUsersDB(db);
-
-          currentSession = { username: usernameInput };
-          localStorage.setItem(SESSION_KEY, JSON.stringify(currentSession));
-          alert("Account created! Check your browser inspection console log for your verification code.");
-        } else {
-          // Secure layout credential checking logic
-          if (!db[userKey]) {
-            alert("Error: Account username does not exist!");
-            return;
-          }
-          const checkHash = await hashPassword(passwordInput);
-          if (db[userKey].password !== checkHash) {
-            alert("Error: Incorrect password.");
-            return;
-          }
-          currentSession = { username: db[userKey].username };
-          localStorage.setItem(SESSION_KEY, JSON.stringify(currentSession));
-        }
-
-        document.getElementById("modalForm").reset();
-        authModal.style.display = "none";
-        renderAuthUI();
-      });
-
-      // Validates verification inputs against the secure stored key
-      document.getElementById("submitVerifyBtn").addEventListener("click", () => {
-        if (!currentSession) return;
-        const codeEntered = document.getElementById("verifyCodeInput").value.trim();
-        const db = getUsersDB();
-        const userKey = currentSession.username.toLowerCase();
-        const userFile = db[userKey];
-
-        if (userFile && userFile.verificationCode === codeEntered) {
-          userFile.verified = true;
-          saveUsersDB(db);
-          alert("Success! Your account has been securely verified.");
-          renderAuthUI();
-        } else {
-          alert("Invalid code. Please double-check your browser console logs.");
-        }
-      });
-
-      // Original 12 box card layout clicking tracker
-      const cards = document.querySelectorAll(".card");
-      cards.forEach((card, index) => {
-        card.addEventListener("click", () => {
-          console.log(`Box ${index + 1} clicked`);
-        });
-      });
-    });
   </script>
 </body>
 </html>
