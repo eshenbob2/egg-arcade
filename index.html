@@ -27,15 +27,18 @@
       margin-bottom: 25px;
     }
 
-    /* Right-aligned Header Sub-box */
-    .search-bar {
+    /* Styled Text Box Input */
+    .search-input {
       width: 30%;
       height: 25px;
-      border:  1px solid #000000;
+      border: 1px solid #000000;
       position: absolute;
       right: 15px;
       top: 50%;
       transform: translateY(-50%);
+      padding: 0 10px; /* Adds space for internal typing text */
+      outline: none;  /* Removes browser default focus outlines */
+      font-family: sans-serif;
     }
 
     /* 3-Column Content Grid */
@@ -60,10 +63,11 @@
 
   <!-- Top Navigation Wireframe -->
   <header class="top-nav">
-    <div class="search-bar"></div>
+    <!-- Replaced div with an actual semantic text input -->
+    <input type="text" class="search-input" placeholder="Type here...">
   </header>
 
-  <!-- 6-Box Grid Wireframe -->
+  <!-- 12-Box Grid Wireframe -->
   <main class="grid-container">
     <div class="card"></div>
     <div class="card"></div>
