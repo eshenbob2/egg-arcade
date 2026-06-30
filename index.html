@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Wireframe Layout</title>
+  <title>Game Creation Platform</title>
   
   <style>
     /* Reset and Base Styles */
@@ -23,8 +23,27 @@
       width: 100%;
       height: 50px;
       border: 2px solid #000000;
-      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 15px;
       margin-bottom: 25px;
+    }
+
+    /* Create Button Styling */
+    .create-btn {
+      height: 30px;
+      padding: 0 15px;
+      border: 2px solid #000000;
+      background-color: #ffffff;
+      font-weight: bold;
+      cursor: pointer;
+      font-family: sans-serif;
+    }
+
+    .create-btn:hover {
+      background-color: #000000;
+      color: #ffffff;
     }
 
     /* Styled Text Box Input */
@@ -32,10 +51,6 @@
       width: 30%;
       height: 25px;
       border: 1px solid #000000;
-      position: absolute;
-      right: 15px;
-      top: 50%;
-      transform: translateY(-50%);
       padding: 0 10px;
       outline: none;
       font-family: sans-serif;
@@ -93,9 +108,13 @@
       color: #000000;
     }
 
-    .game-creator {
-      font-size: 11px;
-      color: #666666;
+    /* Message shown when no games have been created yet */
+    .empty-message {
+      font-family: sans-serif;
+      color: #777777;
+      text-align: center;
+      width: 100%;
+      padding: 40px;
     }
   </style>
 </head>
@@ -103,45 +122,35 @@
 
   <!-- Top Navigation Wireframe -->
   <header class="top-nav">
+    <button class="create-btn" id="createBtn">+ Create Game</button>
     <input type="text" class="search-input" id="searchBar" placeholder="search...">
   </header>
 
-  <!-- Container left empty: JavaScript handles everything here -->
+  <!-- Container for User Created Games -->
   <main class="grid-container" id="gameGrid"></main> 
 
   <script>
-    // 1. Central Game Data Store (Simulating user-created games)
-    const gamesDatabase = [
-      { id: 1, title: "Speed Run Obby 🚀", creator: "User402" },
-      { id: 2, title: "Base Wars PvP ⚔️", creator: "DevGamer" },
-      { id: 3, title: "Clicker Tycoon 💰", creator: "PixelArtist" },
-      { id: 4, title: "Hide and Seek 🙈", creator: "CodeMaster" },
-      { id: 5, title: "Space Explorer 🌌", creator: "NovaBuilds" },
-      { id: 6, title: "Medieval Quest 🛡️", creator: "KnightDev" },
-      { id: 7, title: "City Simulator 🏙️", creator: "BuilderJoe" },
-      { id: 8, title: "Zombie Survival 🧟", creator: "Survivor9" },
-      { id: 9, title: "Kart Racer Extreme 🏎️", creator: "Speedy" },
-      { id: 10, title: "Escape Room Mystery 🔑", creator: "Brainiac" },
-      { id: 11, title: "Tower Defense 🗼", creator: "StrategyPro" },
-      { id: 12, title: "Island Survival 🏝️", creator: "Crafty" }
-    ];
+    // 1. Initialize user database from LocalStorage (persists data across page refreshes)
+    let userGames = JSON.parse(localStorage.getItem('myCreatedGames')) || [];
 
-    // 2. Function to dynamically build DOM elements
+    // 2. Render created games onto dashboard
     function renderGames(gamesList) {
       const grid = document.getElementById("gameGrid");
-      grid.innerHTML = ""; // Clear existing grid items
+      grid.innerHTML = ""; 
+
+      if (gamesList.length === 0) {
+        grid.innerHTML = `<div class="empty-message">No games found. Click "+ Create Game" to build your first project!</div>`;
+        return;
+      }
 
       gamesList.forEach((game) => {
-        // Create base card element
         const card = document.createElement("div");
         card.className = "card";
 
-        // Setup thumbnail node
         const thumb = document.createElement("div");
         thumb.className = "card-thumb";
-        thumb.textContent = "Thumbnail";
+        thumb.textContent = "Play Game";
 
-        // Setup info node
         const info = document.createElement("div");
         info.className = "card-info";
 
@@ -149,43 +158,56 @@
         title.className = "game-title";
         title.textContent = game.title;
 
-        const creator = document.createElement("div");
-        creator.className = "game-creator";
-        creator.textContent = `by ${game.creator}`;
-
-        // Stitch the nodes together
         info.appendChild(title);
-        info.appendChild(creator);
         card.appendChild(thumb);
         card.appendChild(info);
 
-        // Core Launch Logic
+        // Core Launch Trigger
         card.addEventListener("click", () => {
-          alert(`Launching game ID ${game.id}: "${game.title}"`);
-          // This is where your game player engine script will run later!
+          alert(`Loading engine player to run your project: "${game.title}"`);
+          // This is where your code player script will execute the project logic
         });
 
         grid.appendChild(card);
       });
     }
 
-    // Initialize layout rendering on page load
+    // 3. Setup event listeners on startup
     document.addEventListener("DOMContentLoaded", () => {
-      renderGames(gamesDatabase);
+      renderGames(userGames);
 
-      // Search filtering integration
+      // Handle Game Creation Prompt
+      const createBtn = document.getElementById("createBtn");
+      createBtn.addEventListener("click", () => {
+        const titleInput = prompt("Enter a name for your new game:");
+        
+        // Ensure they typed something and didn't hit cancel
+        if (titleInput && titleInput.trim() !== "") {
+          const newGame = {
+            id: Date.now(), // Unique ID using timestamp
+            title: titleInput.trim()
+          };
+
+          // Update local memory data arrays
+          userGames.push(newGame);
+          localStorage.setItem('myCreatedGames', JSON.stringify(userGames));
+          
+          // Re-render dashboard to show the new card
+          renderGames(userGames);
+        }
+      });
+
+      // Filter your created games through searching
       const searchBar = document.getElementById("searchBar");
       searchBar.addEventListener("input", (e) => {
         const searchTerm = e.target.value.toLowerCase();
-        const filteredGames = gamesDatabase.filter(game => 
-          game.title.toLowerCase().includes(searchTerm) || 
-          game.creator.toLowerCase().includes(searchTerm)
+        const filteredGames = userGames.filter(game => 
+          game.title.toLowerCase().includes(searchTerm)
         );
         renderGames(filteredGames);
       });
     });
   </script>
-
 
 </body>
 </html>
