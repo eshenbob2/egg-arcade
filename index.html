@@ -1,118 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Game Creator</title>
   <style>
-    body { font-family: sans-serif; background: #111; color: #fff; padding: 20px; }
-    .menu { max-width: 400px; margin: 0 auto 30px; display: flex; flex-direction: column; gap: 10px; }
-    input, button { padding: 10px; border-radius: 5px; border: none; }
-    /* Style file input to look cleaner */
-    input[type="file"] { background: #222; color: #fff; cursor: pointer; }
-    button { background: #007bff; color: #fff; cursor: pointer; font-weight: bold; }
-    #grid { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; }
-    .card { background: #222; border: 1px solid #333; border-radius: 8px; padding: 15px; width: 200px; text-align: center; }
-    .thumb { width: 100%; height: 120px; background: #333; object-fit: cover; border-radius: 5px; margin-bottom: 10px; }
-    #stage { width: 400px; height: 300px; background: #000; border: 2px solid #333; margin: 20px auto; position: relative; overflow: hidden; }
-    #player { width: 30px; height: 30px; background: #ffc107; position: absolute; bottom: 20px; left: 185px; border-radius: 4px; }
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      color: black;
+    }
+    /* Fixed: Changed 'frame' to '.frame' and fixed the colon */
+    .frame {
+      border: 2px solid black;
+      color: black; 
+    }
+    /* Fixed: Changed 'frame:hover' to '.frame:hover' */
+    .frame:hover {
+      border: 2px solid #27b9e6;
+    }
   </style>
 </head>
 <body>
-
-  <!-- VIEW 1: DASHBOARD MENU -->
-  <div id="view-menu">
-    <div class="menu">
-      <h2>Create a Game</h2>
-      <input type="text" id="title" placeholder="Game Title">
-      <!-- File browser input limited to image files only -->
-      <input type="file" id="img-file" accept="image/*">
-      <button onclick="addGame()">Publish Game</button>
-    </div>
-    <div id="grid"></div>
+  <div class="frame">
+    <p>This content is now sitting inside your styled frame!</p>
   </div>
-
-  <!-- VIEW 2: GAME PLAYER -->
-  <div id="view-game" style="display: none; text-align: center;">
-    <button onclick="goBack()">⬅ Back</button>
-    <h2 id="game-title">Playing</h2>
-    <div id="stage"><div id="player"></div></div>
-    <p>Use <b>Left / Right Arrows</b> or <b>A / D</b> keys to move!</p>
-  </div>
-
-  <script>
-    const games = [
-      { title: "Space Arcade", img: "https://picsum.photos" },
-      { title: "Pixel Runner", img: "" }
-    ];
-
-    let playerX = 185;
-    let active = false;
-
-    function render() {
-      const grid = document.getElementById("grid");
-      grid.innerHTML = "";
-      games.forEach((game, i) => {
-        grid.innerHTML += `
-          <div class="card">
-            ${game.img ? `<img class="thumb" src="${game.img}">` : `<div class="thumb" style="display:flex;align-items:center;justify-content:center;color:#aaa;font-size:12px;">No Image</div>`}
-            <h3>${game.title}</h3>
-            <button onclick="play(${i})">Play</button>
-          </div>`;
-      });
-    }
-
-    function addGame() {
-      const titleInput = document.getElementById("title");
-      const fileInput = document.getElementById("img-file");
-
-      if (!titleInput.value.trim()) return alert("Enter a title!");
-
-      const file = fileInput.files[0];
-
-      if (file) {
-        // Use FileReader to convert the local machine file to a web URL link
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          games.push({ title: titleInput.value, img: e.target.result });
-          resetAndRender(titleInput, fileInput);
-        };
-        reader.readAsDataURL(file);
-      } else {
-        // Create game without an image if they didn't select one
-        games.push({ title: titleInput.value, img: "" });
-        resetAndRender(titleInput, fileInput);
-      }
-    }
-
-    function resetAndRender(titleInput, fileInput) {
-      titleInput.value = ""; 
-      fileInput.value = ""; // Clears the file picker selection
-      render();
-    }
-
-    function play(index) {
-      document.getElementById("view-menu").style.display = "none";
-      document.getElementById("view-game").style.display = "block";
-      document.getElementById("game-title").innerText = games[index].title;
-      playerX = 185;
-      document.getElementById("player").style.left = playerX + "px";
-      active = true;
-    }
-
-    function goBack() {
-      document.getElementById("view-game").style.display = "none";
-      document.getElementById("view-menu").style.display = "block";
-      active = false;
-    }
-
-    window.addEventListener("keydown", (e) => {
-      if (!active) return;
-      if (e.key === "ArrowLeft" || e.key === "a") playerX = Math.max(0, playerX - 15);
-      if (e.key === "ArrowRight" || e.key === "d") playerX = Math.min(370, playerX + 15);
-      document.getElementById("player").style.left = playerX + "px";
-    });
-
-    render();
-  </script>
 </body>
 </html>
