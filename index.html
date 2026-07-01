@@ -147,8 +147,8 @@ body {
   <header class="topbar">
     <h1 style="font-style: italic;">egg arcade™</h1>
     <div class="nav-actions">
-      <input type="text" class="search" placeholder="Search games or creators...">
-      <button class="account-btn" id="loginNavBtn">LOG IN</button>
+      <input type="text" class="search" placeholder="search cool games and cool creators">
+      <button class="account-btn" id="loginNavBtn">log in</button>
     </div>
   </header>
 
@@ -159,7 +159,7 @@ body {
         <h3>test</h3>
         <p>By: burgreez</p>
       </div>
-      <button class="playbutton">PLAY</button>
+      <button class="playbutton">PLAY :D</button>
     </div>
   </main> 
 
@@ -170,7 +170,7 @@ body {
       <p id="modalGameCreator" style="font-size: 13px; color: #555; margin-top: 5px;">By: Creator</p>
       
       <div class="game-canvas-screen">
-        [ Engine Player Loading Blueprint Canvas ]
+        loading... touch grass in the meanwhile🥀
       </div>
       
       <button class="playbutton" id="closeGameBtn" style="width: 100%; text-align: center;">CLOSE GAME</button>
@@ -181,10 +181,10 @@ body {
   <div class="modal-overlay" id="accountModal">
     <div class="modal-content" style="max-width: 400px;">
       <h2 style="margin-bottom: 10px; font-style: italic;">egg arcade account</h2>
-      <p style="font-size: 13px; color: #555; margin-bottom: 15px;">Log in to track your level submissions and stats!</p>
+      <p style="font-size: 13px; color: #555; margin-bottom: 15px;">log in to use egg arcade studio :D</p>
       <form onsubmit="event.preventDefault(); triggerMockLogin();">
-        <input type="text" id="usernameField" placeholder="Choose Username..." required maxlength="15">
-        <input type="password" placeholder="Password..." required>
+        <input type="text" id="usernameField" placeholder="choose a cool username." required maxlength="15">
+        <input type="password" placeholder="password" required>
         <button type="submit" class="playbutton" style="width: 100%; margin-top: 10px; text-align: center;">SIGN IN / SIGN UP</button>
       </form>
       <button class="account-btn" id="closeAccountBtn" style="margin-top: 12px; width: 100%;">CANCEL</button>
@@ -209,13 +209,13 @@ body {
       // 💾 Check browser storage on boot
       const savedUser = localStorage.getItem("eggArcadeUser");
       if (savedUser) {
-        loginNavBtn.innerText = "👤 " + savedUser.toUpperCase();
+        loginNavBtn.innerText = "" + savedUser.toLowerCase();
       }
 
       // Account Button Handlers
       loginNavBtn.addEventListener("click", () => {
         if (localStorage.getItem("eggArcadeUser")) {
-          if (confirm("Do you want to log out?")) {
+          if (confirm("u really wanna log out?")) {
             localStorage.removeItem("eggArcadeUser");
             loginNavBtn.innerText = "LOG IN";
           }
@@ -232,7 +232,7 @@ body {
         const user = document.getElementById("usernameField").value.trim();
         if (user) {
           localStorage.setItem("eggArcadeUser", user);
-          loginNavBtn.innerText = "👤 " + user.toUpperCase();
+          loginNavBtn.innerText = "" + user.toLowerCase();
           accountModal.style.display = "none";
         }
       }
@@ -245,7 +245,7 @@ body {
           
           // Inject the card info straight into the popup screen details
           modalGameTitle.innerText = gameTitle;
-          modalGameCreator.innerText = "Created using Studio " + gameCreator;
+          modalGameCreator.innerText = "created with the amazing egg arcade studio " + gameCreator;
           
           // Slide the play window into view
           gamePlayModal.style.display = "flex";
