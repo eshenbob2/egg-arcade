@@ -170,10 +170,10 @@ body {
       <p id="modalGameCreator" style="font-size: 13px; color: #555; margin-top: 5px;">By: Creator</p>
       
       <div class="game-canvas-screen">
-        loading... touch grass in the meanwhile🥀
+        loading game... (if it takes too long our servers probably broke)
       </div>
       
-      <button class="playbutton" id="closeGameBtn" style="width: 100%; text-align: center;">CLOSE GAME</button>
+      <button class="playbutton" id="closeGameBtn" style="width: 100%; text-align: center;">ragequit game 🥀</button>
     </div>
   </div>
 
@@ -217,7 +217,7 @@ body {
         if (localStorage.getItem("eggArcadeUser")) {
           if (confirm("u really wanna log out?")) {
             localStorage.removeItem("eggArcadeUser");
-            loginNavBtn.innerText = "LOG IN";
+            loginNavBtn.innerText = "log in plz";
           }
         } else {
           accountModal.style.display = "flex";
