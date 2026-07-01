@@ -81,7 +81,6 @@ body {
   outline: none;
 }
 
-/* Minimal Account Buttons matching your standard button styles */
 .nav-actions {
   display: flex;
   align-items: center;
@@ -102,7 +101,7 @@ body {
   background-color: #eee;
 }
 
-/* Simple overlay system for account forms */
+/* 🖥️ CLEAN OVERLAY WINDOW SYSTEM */
 .modal-overlay {
   display: none; 
   position: fixed;
@@ -118,7 +117,7 @@ body {
   padding: 30px;
   text-align: center;
   width: 90%;
-  max-width: 400px;
+  max-width: 500px;
 }
 .account-form input {
   width: 100%;
@@ -126,6 +125,19 @@ body {
   margin: 8px 0;
   border: 1px solid black;
   outline: none;
+}
+
+/* 🕹️ RETRO GAME CONTROLLER SCREEN */
+.game-canvas-screen {
+  width: 100%;
+  height: 250px;
+  background-color: #f0f0f0;
+  border: 2px solid black;
+  margin: 15px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
 }
 </style>
 </head>
@@ -151,9 +163,23 @@ body {
     </div>
   </main> 
 
+  <!-- 🕹️ THE LIVE GAME RETRO POPUP WINDOW -->
+  <div class="modal-overlay" id="gamePlayModal">
+    <div class="modal-content">
+      <h2 id="modalGameTitle" style="font-style: italic;">Game Title</h2>
+      <p id="modalGameCreator" style="font-size: 13px; color: #555; margin-top: 5px;">By: Creator</p>
+      
+      <div class="game-canvas-screen">
+        [ Engine Player Loading Blueprint Canvas ]
+      </div>
+      
+      <button class="playbutton" id="closeGameBtn" style="width: 100%; text-align: center;">CLOSE GAME</button>
+    </div>
+  </div>
+
   <!-- Simple Login Panel Overlay -->
   <div class="modal-overlay" id="accountModal">
-    <div class="modal-content">
+    <div class="modal-content" style="max-width: 400px;">
       <h2 style="margin-bottom: 10px; font-style: italic;">egg arcade account</h2>
       <p style="font-size: 13px; color: #555; margin-bottom: 15px;">Log in to track your level submissions and stats!</p>
       <form onsubmit="event.preventDefault(); triggerMockLogin();">
@@ -169,11 +195,18 @@ body {
     document.addEventListener("DOMContentLoaded", () => {
       const cards = document.querySelectorAll(".card");
       const searchInput = document.querySelector(".search");
+      
+      // Modal Selectors
       const accountModal = document.getElementById("accountModal");
       const loginNavBtn = document.getElementById("loginNavBtn");
       const closeAccountBtn = document.getElementById("closeAccountBtn");
+      
+      const gamePlayModal = document.getElementById("gamePlayModal");
+      const modalGameTitle = document.getElementById("modalGameTitle");
+      const modalGameCreator = document.getElementById("modalGameCreator");
+      const closeGameBtn = document.getElementById("closeGameBtn");
 
-      // 💾 Check browser storage on boot to preserve usernames automatically
+      // 💾 Check browser storage on boot
       const savedUser = localStorage.getItem("eggArcadeUser");
       if (savedUser) {
         loginNavBtn.innerText = "👤 " + savedUser.toUpperCase();
@@ -204,12 +237,23 @@ body {
         }
       }
 
-      // Card Execution (Your classic engine hook)
+      // 🕹️ Card Click Launcher Function
       cards.forEach(card => {
-        card.addEventListener("click", (e) => {
-          // If they click the card or play button, fire up the game launch sequence
-          console.log("Initializing web runner engine canvas properties...");
+        card.addEventListener("click", () => {
+          const gameTitle = card.querySelector("h3").innerText;
+          const gameCreator = card.querySelector("p").innerText;
+          
+          // Inject the card info straight into the popup screen details
+          modalGameTitle.innerText = gameTitle;
+          modalGameCreator.innerText = "Created using Studio " + gameCreator;
+          
+          // Slide the play window into view
+          gamePlayModal.style.display = "flex";
         });
+      });
+
+      closeGameBtn.addEventListener("click", () => {
+        gamePlayModal.style.display = "none";
       });
 
       // Filter Actions
