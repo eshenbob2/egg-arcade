@@ -13,7 +13,7 @@ body {
   padding: 20px;
 }
 
-/* 🧱 NEW GRID CONTAINER PIPELINE (Replaced Flex with Grid.) */
+/* 🧱 NEW GRID CONTAINER PIPELINE (Replaced Flex with Grid) */
 .grid-container {
   display: grid;
   /* Automatically fits 3 columns evenly across wide screens, stacks nicely on mobile */
@@ -36,7 +36,6 @@ body {
 
 .card:hover {
   border: 3px solid black; 
- background-color: rgb(200, 200, 200);
 }
 
 .card h3 {
@@ -59,6 +58,7 @@ body {
 
 .playbutton:hover {
   border: 2px solid black; 
+  background-color: rgb(200, 200, 200);
 }
 
 .topbar {
@@ -83,33 +83,39 @@ body {
   outline: none;
 }
 
-/* Modal Window Layout Styles */
-.modal-overlay {
-  display: none; 
-  position: fixed;
-  top: 0; left: 0; width: 100%; height: 100%;
-  background: rgba(0, 0, 0, 0.7);
-  z-index: 10;
-  justify-content: center;
-  align-items: center;
-}
-.modal-content {
-  background: white;
-  border: 2px solid black;
-  padding: 30px;
-  text-align: center;
-  width: 90%;
-  max-width: 600px;
-}
-.game-screen {
-  width: 100%;
-  height: 300px;
-  background: #eee;
-  border: 1px solid black;
-  margin: 15px 0;
+/* 🔑 ACCOUNT PANEL LAYOUT CORES */
+.nav-actions {
   display: flex;
-  justify-content: center;
   align-items: center;
+  gap: 15px;
+  width: 50%;
+  justify-content: flex-end;
+}
+
+.account-btn {
+  background: white;
+  border: 1px solid black;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.account-btn:hover {
+  border: 2px solid black;
+  background-color: #eee;
+}
+
+.account-form input {
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0;
+  border: 1px solid black;
+  outline: none;
+  font-family: sans-serif;
+}
+
+.account-form input:focus {
+  border: 2px solid black;
 }
 </style>
 </head>
@@ -117,14 +123,19 @@ body {
 
   <!-- Top Navigation View Panel -->
   <header class="topbar">
-    <h1 style="font-style: italic;">egg arcade™</h1>
-    <input type="text" class="search" placeholder="Search games or creators...">
+    <h1 style="font-style: italic; cursor: pointer;" onclick="window.location.reload()">egg arcade™</h1>
+    
+    <!-- Grouped the search box and log in button together inside your flex rules -->
+    <div class="nav-actions">
+      <input type="text" class="search" placeholder="Search games or creators..." style="width: 60%;">
+      <button class="account-btn" id="loginNavBtn">LOG IN</button>
+    </div>
   </header>
 
   <!-- Hardcoded Anti-Spam Protected Live Grid Elements -->
   <main class="grid-container" id="liveGameGrid">
     
-    <!-- Game Card 1 (Featured) - Fixed tag structure layout error here -->
+    <!-- Game Card 1 (Featured) -->
     <div class="card" data-featured="true">
       <div>
         <h3>test</h3>
@@ -146,17 +157,58 @@ body {
     </div>
   </div>
 
-  <!-- Operational Search & Modal Interactivity Controller Scripts -->
+  <!-- 🔑 NEW LOGIN SYSTEM OVERLAY MODAL -->
+  <div class="modal-overlay" id="accountModal">
+    <div class="modal-content" style="max-width: 400px;">
+      <h2 style="margin-bottom: 10px; font-style: italic;">egg arcade account</h2>
+      <p style="font-size: 13px; color: #555; margin-bottom: 15px;">Log in to track your level submissions and stats!</p>
+      
+      <form class="account-form" onsubmit="event.preventDefault(); triggerMockLogin();">
+        <input type="text" id="usernameField" placeholder="Choose Username..." required maxlength="15">
+        <input type="password" placeholder="Password..." required>
+        <button type="submit" class="playbutton" style="width: 100%; margin-top: 10px; text-align: center;">SIGN IN / SIGN UP</button>
+      </form>
+      
+      <button class="account-btn" id="closeAccountBtn" style="margin-top: 12px; width: 100%;">CANCEL</button>
+    </div>
+  </div>
+
+  <!-- Operational Search, Modal, & Interactivity Controller Scripts -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const cards = document.querySelectorAll(".card");
       const searchInput = document.querySelector(".search");
-      const modal = document.getElementById("gameModal");
+      
+      // Game Display Elements
+      const gameModal = document.getElementById("gameModal");
       const modalTitle = document.getElementById("modalTitle");
       const modalCreator = document.getElementById("modalCreator");
       const closeBtn = document.getElementById("closeBtn");
 
-      // 1. Click Listener Action: Maps your custom layout items to your modal player
+      // Account Display Elements
+      const accountModal = document.getElementById("accountModal");
+      const loginNavBtn = document.getElementById("loginNavBtn");
+      const closeAccountBtn = document.getElementById("closeAccountBtn");
+
+      // --- ACCOUNT BUTTON INTERACTION HANDLERS ---
+      loginNavBtn.addEventListener("click", () => {
+        accountModal.style.display = "flex";
+      });
+
+      closeAccountBtn.addEventListener("click", () => {
+        accountModal.style.display = "none";
+      });
+
+      // Simulation showing name transformation in navbar without live servers
+      window.triggerMockLogin = function() {
+        const user = document.getElementById("usernameField").value.trim();
+        if (user) {
+          loginNavBtn.innerText = "👤 " + user.toUpperCase();
+          accountModal.style.display = "none";
+        }
+      }
+
+      // --- GAME CLICK WINDOW HANDLERS ---
       cards.forEach(card => {
         card.addEventListener("click", () => {
           const gameTitle = card.querySelector("h3").innerText;
@@ -164,11 +216,11 @@ body {
           
           modalTitle.innerText = gameTitle;
           modalCreator.innerText = "Created using Studio " + gameCreator;
-          modal.style.display = "flex";
+          gameModal.style.display = "flex";
         });
       });
 
-      // 2. Search Box Keystroke Interceptor Filter
+      // --- NAV SEARCH FILTRATION HANDLERS ---
       searchInput.addEventListener("keyup", (event) => {
         const query = event.target.value.trim().toLowerCase();
 
@@ -178,14 +230,12 @@ body {
           const isFeatured = card.getAttribute("data-featured") === "true";
 
           if (query.length > 2) {
-            // Typing more than 2 characters searches EVERYTHING across the grid layout
             if (gameTitle.includes(query) || gameCreator.includes(query)) {
               card.style.display = "flex";
             } else {
               card.style.display = "none";
             }
           } else if (query.length === 0) {
-            // Clearing the search bar filters back to Premium Featured items automatically
             if (isFeatured) {
               card.style.display = "flex";
             } else {
@@ -195,9 +245,8 @@ body {
         });
       });
 
-      // Close handler routines
       closeBtn.addEventListener("click", () => {
-        modal.style.display = "none";
+        gameModal.style.display = "none";
       });
     });
   </script>
