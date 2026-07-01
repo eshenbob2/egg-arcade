@@ -157,13 +157,13 @@ body {
     <div class="card" data-featured="true">
       <div>
         <h3>test</h3>
-        <p>By: burgreez</p>
+        <p>by: burgreez</p>
       </div>
       <button class="playbutton">PLAY :D</button>
     </div>
   </main> 
 
-  <!-- 🕹️ THE LIVE GAME RETRO POPUP WINDOW -->
+  <!-- THE LIVE GAME RETRO POPUP WINDOW -->
   <div class="modal-overlay" id="gamePlayModal">
     <div class="modal-content">
       <h2 id="modalGameTitle" style="font-style: italic;">Game Title</h2>
@@ -237,17 +237,15 @@ body {
         }
       }
 
-      // 🕹️ Card Click Launcher Function
+      // 🕹️ Card Click Launcher Function (Fixed bubble triggers)
       cards.forEach(card => {
-        card.addEventListener("click", () => {
+        card.addEventListener("click", (event) => {
           const gameTitle = card.querySelector("h3").innerText;
           const gameCreator = card.querySelector("p").innerText;
           
-          // Inject the card info straight into the popup screen details
           modalGameTitle.innerText = gameTitle;
           modalGameCreator.innerText = "created with the amazing egg arcade studio " + gameCreator;
           
-          // Slide the play window into view
           gamePlayModal.style.display = "flex";
         });
       });
