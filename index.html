@@ -13,10 +13,9 @@ body {
   padding: 20px;
 }
 
-/* 🧱 NEW GRID CONTAINER PIPELINE (Replaced Flex with Grid) */
+/* 🧱 GRID CONTAINER PIPELINE */
 .grid-container {
   display: grid;
-  /* Automatically fits 3 columns evenly across wide screens, stacks nicely on mobile */
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 20px;
   width: 100%;
@@ -25,7 +24,6 @@ body {
 .card {
   background-color: white;
   border: 2px solid black;
-  /* Fixed bounds so EVERY box is always identical regardless of row position */
   height: 150px;
   padding: 15px;
   cursor: pointer;
@@ -83,7 +81,7 @@ body {
   outline: none;
 }
 
-/* 🔑 ACCOUNT PANEL LAYOUT CORES */
+/* Minimal Account Buttons matching your standard button styles */
 .nav-actions {
   display: flex;
   align-items: center;
@@ -99,43 +97,51 @@ body {
   cursor: pointer;
   font-weight: bold;
 }
-
 .account-btn:hover {
   border: 2px solid black;
   background-color: #eee;
 }
 
+/* Simple overlay system for account forms */
+.modal-overlay {
+  display: none; 
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 10;
+  justify-content: center;
+  align-items: center;
+}
+.modal-content {
+  background: white;
+  border: 2px solid black;
+  padding: 30px;
+  text-align: center;
+  width: 90%;
+  max-width: 400px;
+}
 .account-form input {
   width: 100%;
   padding: 10px;
   margin: 8px 0;
   border: 1px solid black;
   outline: none;
-  font-family: sans-serif;
-}
-
-.account-form input:focus {
-  border: 2px solid black;
 }
 </style>
 </head>
 <body>
 
-  <!-- Top Navigation View Panel -->
+  <!-- Top Navigation Panel -->
   <header class="topbar">
-    <h1 style="font-style: italic; cursor: pointer;" onclick="window.location.reload()">egg arcade™</h1>
-    
-    <!-- Grouped the search box and log in button together inside your flex rules -->
+    <h1 style="font-style: italic;">egg arcade™</h1>
     <div class="nav-actions">
-      <input type="text" class="search" placeholder="Search games or creators..." style="width: 60%;">
+      <input type="text" class="search" placeholder="Search games or creators...">
       <button class="account-btn" id="loginNavBtn">LOG IN</button>
     </div>
   </header>
 
-  <!-- Hardcoded Anti-Spam Protected Live Grid Elements -->
+  <!-- Hardcoded Grid Elements -->
   <main class="grid-container" id="liveGameGrid">
-    
-    <!-- Game Card 1 (Featured) -->
     <div class="card" data-featured="true">
       <div>
         <h3>test</h3>
@@ -145,108 +151,83 @@ body {
     </div>
   </main> 
 
-  <!-- Centered Play Modal Layer Overlay -->
-  <div class="modal-overlay" id="gameModal">
-    <div class="modal-content">
-      <h2 id="modalTitle">Game Title</h2>
-      <p id="modalCreator" style="color: #555; margin-top: 5px;">By: Creator</p>
-      <div class="game-screen">
-        <h4>[ Engine Player Loading Blueprint Canvas ]</h4>
-      </div>
-      <button class="playbutton" id="closeBtn">CLOSE GAME</button>
-    </div>
-  </div>
-
-  <!-- 🔑 NEW LOGIN SYSTEM OVERLAY MODAL -->
+  <!-- Simple Login Panel Overlay -->
   <div class="modal-overlay" id="accountModal">
-    <div class="modal-content" style="max-width: 400px;">
+    <div class="modal-content">
       <h2 style="margin-bottom: 10px; font-style: italic;">egg arcade account</h2>
       <p style="font-size: 13px; color: #555; margin-bottom: 15px;">Log in to track your level submissions and stats!</p>
-      
-      <form class="account-form" onsubmit="event.preventDefault(); triggerMockLogin();">
+      <form onsubmit="event.preventDefault(); triggerMockLogin();">
         <input type="text" id="usernameField" placeholder="Choose Username..." required maxlength="15">
         <input type="password" placeholder="Password..." required>
         <button type="submit" class="playbutton" style="width: 100%; margin-top: 10px; text-align: center;">SIGN IN / SIGN UP</button>
       </form>
-      
       <button class="account-btn" id="closeAccountBtn" style="margin-top: 12px; width: 100%;">CANCEL</button>
     </div>
   </div>
 
-  <!-- Operational Search, Modal, & Interactivity Controller Scripts -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const cards = document.querySelectorAll(".card");
       const searchInput = document.querySelector(".search");
-      
-      // Game Display Elements
-      const gameModal = document.getElementById("gameModal");
-      const modalTitle = document.getElementById("modalTitle");
-      const modalCreator = document.getElementById("modalCreator");
-      const closeBtn = document.getElementById("closeBtn");
-
-      // Account Display Elements
       const accountModal = document.getElementById("accountModal");
       const loginNavBtn = document.getElementById("loginNavBtn");
       const closeAccountBtn = document.getElementById("closeAccountBtn");
 
-      // --- ACCOUNT BUTTON INTERACTION HANDLERS ---
+      // 💾 Check browser storage on boot to preserve usernames automatically
+      const savedUser = localStorage.getItem("eggArcadeUser");
+      if (savedUser) {
+        loginNavBtn.innerText = "👤 " + savedUser.toUpperCase();
+      }
+
+      // Account Button Handlers
       loginNavBtn.addEventListener("click", () => {
-        accountModal.style.display = "flex";
+        if (localStorage.getItem("eggArcadeUser")) {
+          if (confirm("Do you want to log out?")) {
+            localStorage.removeItem("eggArcadeUser");
+            loginNavBtn.innerText = "LOG IN";
+          }
+        } else {
+          accountModal.style.display = "flex";
+        }
       });
 
       closeAccountBtn.addEventListener("click", () => {
         accountModal.style.display = "none";
       });
 
-      // Simulation showing name transformation in navbar without live servers
       window.triggerMockLogin = function() {
         const user = document.getElementById("usernameField").value.trim();
         if (user) {
+          localStorage.setItem("eggArcadeUser", user);
           loginNavBtn.innerText = "👤 " + user.toUpperCase();
           accountModal.style.display = "none";
         }
       }
 
-      // --- GAME CLICK WINDOW HANDLERS ---
+      // Card Execution (Your classic engine hook)
       cards.forEach(card => {
-        card.addEventListener("click", () => {
-          const gameTitle = card.querySelector("h3").innerText;
-          const gameCreator = card.querySelector("p").innerText;
-          
-          modalTitle.innerText = gameTitle;
-          modalCreator.innerText = "Created using Studio " + gameCreator;
-          gameModal.style.display = "flex";
+        card.addEventListener("click", (e) => {
+          // If they click the card or play button, fire up the game launch sequence
+          console.log("Initializing web runner engine canvas properties...");
         });
       });
 
-      // --- NAV SEARCH FILTRATION HANDLERS ---
+      // Filter Actions
       searchInput.addEventListener("keyup", (event) => {
         const query = event.target.value.trim().toLowerCase();
-
         cards.forEach(card => {
           const gameTitle = card.querySelector("h3").innerText.toLowerCase();
           const gameCreator = card.querySelector("p").innerText.toLowerCase();
           const isFeatured = card.getAttribute("data-featured") === "true";
 
           if (query.length > 2) {
-            if (gameTitle.includes(query) || gameCreator.includes(query)) {
-              card.style.display = "flex";
-            } else {
-              card.style.display = "none";
-            }
+            if (gameTitle.includes(query) || gameCreator.includes(query)) card.style.display = "flex";
+            else card.style.display = "none";
           } else if (query.length === 0) {
-            if (isFeatured) {
-              card.style.display = "flex";
-            } else {
-              card.style.display = "none";
-            }
+            if (isFeatured) card.style.display = "flex";
+            else card.style.display = "none";
           }
         });
-      });
-
-      closeBtn.addEventListener("click", () => {
-        gameModal.style.display = "none";
       });
     });
   </script>
